@@ -1,0 +1,28 @@
+# azure-pipelines.yml
+trigger:
+  branches:
+    include:
+      - dev
+      - test
+      - uat
+      - prod
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '16.x'
+  displayName: 'Install Node.js'
+
+- script: |
+    echo "Running build for $(Build.SourceBranchName)"
+    echo "<!DOCTYPE html><html><head><title>$(Build.SourceBranchName)</title></head><body><h1>Fragrance: $(Build.SourceBranchName)</h1></body></html>" > index.html
+  displayName: 'Simulate a build output'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.SourcesDirectory)'
+    ArtifactName: 'fragrance-$(Build.SourceBranchName)'
+    publishLocation: 'Container'
